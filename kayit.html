@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="tr">
+    <style>
+  body {
+    margin: 0;
+    background-color: #f2f6fa;
+    font-family: Arial, sans-serif;
+  }
+
+  h1 {
+    color: #1769aa;
+    text-align: center;
+    margin-top: 80px;
+  }
+
+  form {
+    background-color: white;
+    width: 320px;
+    margin: 30px auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 18px #00000018;
+  }
+
+  label, input {
+    display: block;
+    width: 100%;
+    margin-bottom: 12px;
+  }
+
+  input {
+    box-sizing: border-box;
+    padding: 10px;
+  }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    background-color: #1769aa;
+    color: white;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+</style>
+
+
+<head>
+  <meta charset="UTF-8">
+  <title>Kayıt Ol | OtoBul</title>
+</head>
+<body>
+  <h1>OtoBul'a Kayıt Ol</h1>
+
+  <form>
+    <label for="ad">Ad</label>
+    <input id="ad" type="text" required>
+
+    <label for="eposta">E-posta</label>
+    <input id="eposta" type="email" required>
+
+    <label for="sifre">Şifre</label>
+    <input id="sifre" type="password" required>
+
+    <button type="submit">Kayıt Ol</button>
+  </form>
+</body>
+</html>
