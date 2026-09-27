@@ -1,68 +1,87 @@
+
 <!DOCTYPE html>
 <html lang="tr">
-    <style>
-  body {
-    margin: 0;
-    background-color: #f2f6fa;
-    font-family: Arial, sans-serif;
-  }
-
-  h1 {
-    color: #1769aa;
-    text-align: center;
-    margin-top: 80px;
-  }
-
-  form {
-    background-color: white;
-    width: 320px;
-    margin: 30px auto;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 18px #00000018;
-  }
-
-  label, input {
-    display: block;
-    width: 100%;
-    margin-bottom: 12px;
-  }
-
-  input {
-    box-sizing: border-box;
-    padding: 10px;
-  }
-
-  button {
-    width: 100%;
-    padding: 12px;
-    background-color: #1769aa;
-    color: white;
-    border: 0;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-</style>
-
-
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kayıt Ol | OtoBul</title>
+
+  <style>
+    body {
+      margin: 0;
+      background-color: #f2f6fa;
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      color: #1769aa;
+      text-align: center;
+      margin-top: 80px;
+    }
+
+    form {
+      background-color: white;
+      width: 320px;
+      max-width: calc(100% - 80px);
+      margin: 30px auto;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 18px #00000018;
+    }
+
+    label, input {
+      display: block;
+      width: 100%;
+      margin-bottom: 12px;
+    }
+
+    input {
+      box-sizing: border-box;
+      padding: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #1769aa;
+      color: white;
+      border: 0;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .baglantilar {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .baglantilar a {
+      color: #1769aa;
+    }
+  </style>
 </head>
+
 <body>
   <h1>OtoBul'a Kayıt Ol</h1>
 
   <form>
-    <label for="ad">Ad</label>
-    <input id="ad" type="text" required>
+    <label for="ad">Ad Soyad</label>
+    <input id="ad" name="ad_soyad" type="text" required>
 
     <label for="eposta">E-posta</label>
-    <input id="eposta" type="email" required>
+    <input id="eposta" name="email" type="email" required>
 
     <label for="sifre">Şifre</label>
-    <input id="sifre" type="password" required>
+    <input id="sifre" name="sifre" type="password" required>
 
     <button type="submit">Kayıt Ol</button>
+
+    <div class="baglantilar">
+      <p>Zaten hesabınız var mı?
+        <a href="giris.html">Giriş Yap</a>
+      </p>
+      <p><a href="index.html">Ana Sayfaya Dön</a></p>
+    </div>
   </form>
 </body>
 </html>

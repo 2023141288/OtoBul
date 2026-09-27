@@ -4,10 +4,17 @@
   <meta charset="UTF-8">
   <title>OtoBul</title>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
+    
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-image: url("images/arkaplan.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+}
+
 
     .ust-menu {
       background-color: #1769aa;
@@ -50,6 +57,54 @@
     main {
       padding: 32px 8%;
     }
+    
+.karsilama {
+    background-color: rgba(255, 255, 255, 0.92);
+    text-align: center;
+    padding: 45px 30px;
+    max-width: 650px;
+    margin: 40px 0;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.karsilama h1 {
+    color: #123b66;
+    font-size: 38px;
+}
+
+.secenekler {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 35px 0;
+}
+
+.secenekler a {
+    background-color: #1769aa;
+    color: white;
+    padding: 25px 20px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    flex: 1;
+}
+
+.secenekler a:hover {
+    background-color: #123b66;
+}
+
+@media (max-width: 650px) {
+    .secenekler {
+        flex-direction: column;
+    }
+}
+  .slogan {
+    color: #64748b;
+    font-size: 20px;
+    margin-bottom: 25px;
+}
   </style>
 </head>
 <body>
@@ -61,8 +116,23 @@
   </nav>
 
   <main>
-    <h1>OtoBul</h1>
-    <p>Araba almak veya satmak için doğru yerdesin.</p>
-  </main>
+  <section class="karsilama">
+    <h1>OtoBul'a Hoş Geldiniz!</h1>
+    <p class="slogan">Hayalinizdeki otomobile bir adım daha yaklaşın.</p>
+    <p>Ne yapmak istiyorsunuz?</p>
+
+    <div class="secenekler">
+      <a href="giris.html?islem=al">
+        🚗 Araç Almak İstiyorum
+      </a>
+
+      <a href="giris.html?islem=sat">
+        🔑 Araç Satmak İstiyorum
+      </a>
+    </div>
+
+    <p>Devam etmek için giriş yapın veya kayıt olun.</p>
+  </section>
+</main>
 </body>
 </html>
