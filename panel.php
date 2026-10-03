@@ -215,7 +215,7 @@ $ad_soyad = $_SESSION["ad_soyad"];
     <aside class="sol-menu">
         <h3>Hızlı Menü</h3>
 
-        <a href="#">🚗 İlanlarım</a>
+        <a href="ilanlarim.php">🚗 İlanlarım</a>
         <a href="#">❤️ Favori İlanlarım</a>
         <a href="#">💬 Mesajlarım</a>
     </aside>
