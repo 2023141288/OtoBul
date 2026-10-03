@@ -40,9 +40,26 @@ CREATE TABLE IF NOT EXISTS ilan_fotograflari (
     id INT AUTO_INCREMENT PRIMARY KEY,
     ilan_id INT NOT NULL,
     dosya_yolu VARCHAR(255) NOT NULL,
+    kapak_mi TINYINT NOT NULL DEFAULT 0,
 
     CONSTRAINT fk_fotograf_ilan
         FOREIGN KEY (ilan_id)
+        REFERENCES ilanlar(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS favoriler (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    kullanici_id INT NOT NULL,
+    ilan_id INT NOT NULL,
+
+    UNIQUE (kullanici_id, ilan_id),
+
+    FOREIGN KEY (kullanici_id)
+        REFERENCES kullanicilar(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (ilan_id)
         REFERENCES ilanlar(id)
         ON DELETE CASCADE
 );

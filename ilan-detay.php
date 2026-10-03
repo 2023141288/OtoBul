@@ -31,6 +31,19 @@ $ilan = $sorgu->fetch(PDO::FETCH_ASSOC);
 if (!$ilan) {
     exit("İlan bulunamadı.");
 }
+$favoriKontrol = $baglanti->prepare(
+    "SELECT id
+     FROM favoriler
+     WHERE kullanici_id = :kullanici_id
+     AND ilan_id = :ilan_id"
+);
+
+$favoriKontrol->execute([
+    ":kullanici_id" => $_SESSION["kullanici_id"],
+    ":ilan_id" => $ilan_id
+]);
+
+$favorideMi = $favoriKontrol->fetch(PDO::FETCH_ASSOC);
 
 // İlana ait bütün fotoğrafları getir.
 $fotografSorgu = $baglanti->prepare(
@@ -148,8 +161,38 @@ $fotograflar = $fotografSorgu->fetchAll(PDO::FETCH_ASSOC);
     </h1>
 
     <div class="fiyat">
-        <?= number_format((float) $ilan["fiyat"], 0, ",", ".") ?> TL
-    </div>
+    <?= number_format((float) $ilan["fiyat"], 0, ",", ".") ?> TL
+
+    <?php if ($ilan["kullanici_id"] != $_SESSION["kullanici_id"]): ?>
+
+        <?php if ($favorideMi): ?>
+
+    <form action="favori-sil.php" method="POST">
+        <input type="hidden" name="ilan_id" value="<?= (int) $ilan["id"] ?>">
+
+        <button type="submit">
+            💔 Favorilerden Çıkar
+        </button>
+    </form>
+
+        <?php else: ?>
+
+            <form action="favori-ekle.php" method="POST">
+                <input type="hidden" name="ilan_id" value="<?= (int) $ilan["id"] ?>">
+
+                <button type="submit">
+                     Favorilere Ekle
+                </button>
+            </form>
+
+        <?php endif; ?>
+
+    <?php else: ?>
+
+        <p><strong>Bu ilan size ait.</strong></p>
+
+    <?php endif; ?>
+</div>
 
     <?php if (count($fotograflar) > 0): ?>
 
@@ -232,6 +275,8 @@ $fotograflar = $fotografSorgu->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
 </main>
+
+
 
 </body>
 </html>

@@ -70,6 +70,45 @@ if (!isset($_SESSION["kullanici_id"])) {
         button:hover {
             background-color: #124f80;
         }
+
+        #fotograf-onizleme {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.fotograf-secim {
+    width: 150px;
+    padding: 8px;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    background-color: white;
+}
+
+.fotograf-secim img {
+    width: 150px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 7px;
+}
+
+.fotograf-secim.kapak {
+    border-color: #1769aa;
+}
+
+.kapak-yazisi {
+    margin-top: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+}
+
+.fotograf-secim.kapak .kapak-yazisi {
+    color: #1769aa;
+}
     </style>
 </head>
 
@@ -257,6 +296,9 @@ if (!isset($_SESSION["kullanici_id"])) {
                 accept="image/*"
                 multiple
             >
+            <input type="hidden" name="kapak_index" id="kapak_index" value="0">
+
+<div id="fotograf-onizleme"></div>
 
 <button type="submit">İlanı Yayınla</button>        </form>
     </main>
@@ -327,5 +369,53 @@ if (!isset($_SESSION["kullanici_id"])) {
             modelAlani.placeholder = "Model seçin veya yazın";
         });
     </script>
+<script>
+const fotografInput = document.getElementById("fotograflar");
+const onizleme = document.getElementById("fotograf-onizleme");
+const kapakIndex = document.getElementById("kapak_index");
+
+fotografInput.addEventListener("change", function () {
+
+    onizleme.innerHTML = "";
+    kapakIndex.value = 0;
+
+    Array.from(this.files).forEach(function (dosya, index) {
+
+        const kutu = document.createElement("div");
+        kutu.className = "fotograf-secim";
+
+        if (index === 0) {
+            kutu.classList.add("kapak");
+        }
+
+        const resim = document.createElement("img");
+        resim.src = URL.createObjectURL(dosya);
+
+        const yazi = document.createElement("div");
+        yazi.className = "kapak-yazisi";
+        yazi.textContent = index === 0 ? "✓ Kapak Fotoğrafı" : "Kapak Yap";
+
+        kutu.appendChild(resim);
+        kutu.appendChild(yazi);
+        onizleme.appendChild(kutu);
+
+        kutu.addEventListener("click", function () {
+
+            document.querySelectorAll(".fotograf-secim").forEach(function (item) {
+                item.classList.remove("kapak");
+                item.querySelector(".kapak-yazisi").textContent = "Kapak Yap";
+            });
+
+            kutu.classList.add("kapak");
+            yazi.textContent = "✓ Kapak Fotoğrafı";
+            kapakIndex.value = index;
+        });
+    });
+});
+</script>
+
+
+
+
 </body>
 </html>
