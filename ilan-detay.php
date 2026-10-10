@@ -19,7 +19,8 @@ if ($ilan_id <= 0) {
 $sorgu = $baglanti->prepare(
     "SELECT *
      FROM ilanlar
-     WHERE id = :id"
+     WHERE id = :id
+     AND durum = 'onaylandi'"
 );
 
 $sorgu->execute([

@@ -30,6 +30,7 @@ $il = trim($_POST["il"] ?? "");
 $ilce = trim($_POST["ilce"] ?? "");
 $boya_degisen = trim($_POST["boya_degisen"] ?? "");
 $aciklama = trim($_POST["aciklama"] ?? "");
+$kapak_index = (int) ($_POST["kapak_index"] ?? 0);
 
 // Zorunlu alanların kontrolü
 if (
@@ -162,18 +163,19 @@ if (isset($_FILES["fotograflar"])) {
             $veritabaniYolu = "uploads/ilanlar/" . $yeniDosyaAdi;
 
             $fotografSorgu = $baglanti->prepare(
-                "INSERT INTO ilan_fotograflari (ilan_id, dosya_yolu)
-                 VALUES (:ilan_id, :dosya_yolu)"
+                INSERT INTO ilan_fotograflari (ilan_id, dosya_yolu, kapak_mi)
+VALUES (:ilan_id, :dosya_yolu, :kapak_mi)"
             );
 
             $fotografSorgu->execute([
-                ":ilan_id" => $ilan_id,
-                ":dosya_yolu" => $veritabaniYolu
-            ]);
+    ":ilan_id" => $ilan_id,
+    ":dosya_yolu" => $veritabaniYolu,
+    ":kapak_mi" => ($index === $kapak_index) ? 1 : 0
+]);
         }
     }
 }
 
-// Kayıt tamamlandıktan sonra panele dön.
-header("Location: panel.php?ilan=basarili");
+// İlan kaydedildi, yönetici onayı bekliyor.
+header("Location: panel.php?ilan=beklemede");
 exit;

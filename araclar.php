@@ -17,7 +17,7 @@ $max_km = (int) ($_GET["max_km"] ?? 0);
 $yakit = trim($_GET["yakit"] ?? "");
 $vites = trim($_GET["vites"] ?? "");
 $il = trim($_GET["il"] ?? "");
-$kosullar = [];
+$kosullar = ["i.durum = 'onaylandi'"];
 $parametreler = [];
 if ($marka !== "") {
     $kosullar[] = "i.marka LIKE :marka";

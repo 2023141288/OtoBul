@@ -9,6 +9,18 @@ if (!isset($_SESSION["kullanici_id"])) {
 }
 
 $ad_soyad = $_SESSION["ad_soyad"];
+
+require_once "baglanti.php";
+
+$rolSorgu = $baglanti->prepare(
+    "SELECT rol FROM kullanicilar WHERE id = :id"
+);
+
+$rolSorgu->execute([
+    ":id" => $_SESSION["kullanici_id"]
+]);
+
+$adminMi = ($rolSorgu->fetchColumn() === "admin");
 ?>
 
 <!DOCTYPE html>
@@ -218,12 +230,39 @@ $ad_soyad = $_SESSION["ad_soyad"];
         <a href="ilanlarim.php">🚗 İlanlarım</a>
         <a href="favorilerim.php">❤️ Favori İlanlarım</a>
         <a href="mesajlarim.php">💬 Mesajlarım</a>
+        <?php if ($adminMi): ?>
+    <a href="admin.php">🛡️ Yönetici Paneli</a>
+<?php endif; ?>
     </aside>
 
     <main class="ana-icerik">
         <h2>Hoş geldin,
             <?= htmlspecialchars($ad_soyad, ENT_QUOTES, "UTF-8") ?>!
         </h2>
+        
+<?php if (($_GET["ilan"] ?? "") === "beklemede"): ?>
+
+    <div style="
+        background-color: #fff8e1;
+        color: #795548;
+        border: 1px solid #ffe082;
+        padding: 18px;
+        border-radius: 10px;
+        max-width: 600px;
+        margin: 25px auto;
+        text-align: left;
+    ">
+        <strong>⏳ İlanınız yönetici onayı bekliyor.</strong>
+
+        <p>
+            İlanınız başarıyla kaydedildi.
+            Yönetici tarafından incelenip onaylandıktan
+            sonra OtoBul'da yayınlanacaktır.
+        </p>
+    </div>
+
+<?php endif; ?>
+
 
         <p>Ne yapmak istiyorsun?</p>
 
