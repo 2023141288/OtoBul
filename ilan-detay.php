@@ -149,6 +149,11 @@ $fotograflar = $fotografSorgu->fetchAll(PDO::FETCH_ASSOC);
 </head>
 
 <body>
+    <?php if (($_GET["mesaj"] ?? "") === "basarili"): ?>
+    <script>
+        alert("Mesajınız başarıyla gönderildi.");
+    </script>
+<?php endif; ?>
 
 <header>
     <a class="logo" href="panel.php">OtoBul</a>
@@ -167,13 +172,13 @@ $fotograflar = $fotografSorgu->fetchAll(PDO::FETCH_ASSOC);
 
         <?php if ($favorideMi): ?>
 
-    <form action="favori-sil.php" method="POST">
-        <input type="hidden" name="ilan_id" value="<?= (int) $ilan["id"] ?>">
+            <form action="favori-sil.php" method="POST">
+                <input type="hidden" name="ilan_id" value="<?= (int) $ilan["id"] ?>">
 
-        <button type="submit">
-            💔 Favorilerden Çıkar
-        </button>
-    </form>
+                <button type="submit">
+                    💔 Favorilerden Çıkar
+                </button>
+            </form>
 
         <?php else: ?>
 
@@ -181,17 +186,33 @@ $fotograflar = $fotografSorgu->fetchAll(PDO::FETCH_ASSOC);
                 <input type="hidden" name="ilan_id" value="<?= (int) $ilan["id"] ?>">
 
                 <button type="submit">
-                     Favorilere Ekle
+                    ❤️ Favorilere Ekle
                 </button>
             </form>
 
         <?php endif; ?>
+
+        <form action="mesaj-gonder.php" method="POST">
+            <input type="hidden" name="ilan_id" value="<?= (int) $ilan["id"] ?>">
+
+            <textarea
+                name="mesaj"
+                rows="3"
+                placeholder="Satıcıya mesajınızı yazın..."
+                required
+            ></textarea>
+
+            <button type="submit">
+                💬 Satıcıya Mesaj Gönder
+            </button>
+        </form>
 
     <?php else: ?>
 
         <p><strong>Bu ilan size ait.</strong></p>
 
     <?php endif; ?>
+
 </div>
 
     <?php if (count($fotograflar) > 0): ?>

@@ -217,7 +217,7 @@ $ad_soyad = $_SESSION["ad_soyad"];
 
         <a href="ilanlarim.php">🚗 İlanlarım</a>
         <a href="favorilerim.php">❤️ Favori İlanlarım</a>
-        <a href="#">💬 Mesajlarım</a>
+        <a href="mesajlarim.php">💬 Mesajlarım</a>
     </aside>
 
     <main class="ana-icerik">

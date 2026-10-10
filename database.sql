@@ -63,3 +63,48 @@ CREATE TABLE IF NOT EXISTS favoriler (
         REFERENCES ilanlar(id)
         ON DELETE CASCADE
 );
+
+-- Kullanıcılar arasındaki mesajlar
+CREATE TABLE IF NOT EXISTS mesajlar (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ilan_id INT NOT NULL,
+    gonderen_id INT NOT NULL,
+    alici_id INT NOT NULL,
+    mesaj TEXT NOT NULL,
+    gonderim_tarihi TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (ilan_id)
+        REFERENCES ilanlar(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (gonderen_id)
+        REFERENCES kullanicilar(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (alici_id)
+        REFERENCES kullanicilar(id)
+        ON DELETE CASCADE
+);
+
+-- Kullanıcıların kendi hesaplarında gizlediği konuşmalar
+CREATE TABLE IF NOT EXISTS gizlenen_konusmalar (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    kullanici_id INT NOT NULL,
+    ilan_id INT NOT NULL,
+    diger_kullanici_id INT NOT NULL,
+    son_gizlenen_mesaj_id INT NOT NULL,
+
+    UNIQUE (kullanici_id, ilan_id, diger_kullanici_id),
+
+    FOREIGN KEY (kullanici_id)
+        REFERENCES kullanicilar(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (ilan_id)
+        REFERENCES ilanlar(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (diger_kullanici_id)
+        REFERENCES kullanicilar(id)
+        ON DELETE CASCADE
+);
