@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS kullanicilar (
     ad_soyad VARCHAR(100) NOT NULL,
     email VARCHAR(190) NOT NULL UNIQUE,
     sifre VARCHAR(255) NOT NULL,
+    rol ENUM('kullanici', 'admin') NOT NULL DEFAULT 'kullanici',
     kayit_tarihi TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -28,6 +29,7 @@ CREATE TABLE IF NOT EXISTS ilanlar (
     ilce VARCHAR(80) NOT NULL,
     boya_degisen TEXT NOT NULL,
     aciklama TEXT,
+    durum ENUM('beklemede', 'onaylandi', 'reddedildi') NOT NULL DEFAULT 'beklemede',
     olusturma_tarihi TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_ilan_kullanici
