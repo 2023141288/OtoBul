@@ -39,12 +39,7 @@ body {
       border-radius: 8px;
     }
 
-    .arama {
-      flex: 1;
-      padding: 12px;
-      border: 0;
-      border-radius: 6px;
-    }
+    
 
     .menu-yazisi {
       color: white;
@@ -122,20 +117,52 @@ body {
     margin: 0;
     padding: 0;
 }
+
+.ust-menu a.menu-yazisi[href="giris.html"] {
+    margin-left: auto;
+}
+
+
+.ust-menu {
+    position: relative;
+}
+
+.ust-slogan {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 26px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+@media (max-width: 1100px) {
+    .ust-slogan {
+        display: none;
+    }
+}
+
+
+
   </style>
 </head>
 <body>
   <<nav class="ust-menu">
     <span class="logo">OtoBul</span>
+    <div class="ust-slogan">
+    🚘 Hayalindeki aracı Bul!
+</div>
 
     <a class="menu-yazisi" href="hakkimizda.html">Hakkımızda</a>
     <a class="menu-yazisi" href="iletisim.html">İletişim</a>
 
-    <input class="arama" type="search" placeholder="Marka veya model ara">
+    
 
     <a class="menu-yazisi" href="giris.html">Giriş Yap</a>
     <a class="menu-yazisi" href="kayit.html">Kayıt Ol</a>
-    <span class="ilan-dugmesi">İlan Ver</span>
+    <a class="ilan-dugmesi" href="giris.html">İlan Ver</a>
 </nav>
 
   <main>

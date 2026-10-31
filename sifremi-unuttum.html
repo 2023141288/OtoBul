@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Şifremi Unuttum | OtoBul</title>
+    <style>
+    body {
+        margin: 0;
+        background-color: #f2f6fa;
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+
+    h2 {
+        color: #1769aa;
+        margin-top: 80px;
+    }
+
+    form {
+        background-color: white;
+        width: 320px;
+        max-width: calc(100% - 80px);
+        margin: 30px auto;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 18px #00000018;
+    }
+
+    input {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        background-color: #1769aa;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    a {
+        color: #1769aa;
+    }
+</style>
+</head>
+<body>
+
+    <h2>🔒 Şifremi Unuttum</h2>
+
+    <p>Şifrenizi sıfırlamak için e-posta adresinizi giriniz.</p>
+
+    <form onsubmit="event.preventDefault(); document.getElementById('sonuc').style.display='block';">
+
+    <input type="email" placeholder="E-posta adresiniz" required>
+
+    <button type="submit">Sıfırlama Bağlantısı Gönder</button>
+
+    <p id="sonuc" style="display:none; color:green;">
+         yeni şifre belirttiğiniz e posyaya gönderildi 
+        
+    </p>
+
+</form>
+
+    <p><a href="giris.html">Giriş Sayfasına Dön</a></p>
+
+</body>
+</html></head>

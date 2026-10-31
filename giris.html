@@ -54,11 +54,31 @@
   <h1>OtoBul'a Giriş Yap</h1>
 
   <form action="giris.php" method="POST">
+    <p id="giris-hatasi" style="
+    display:none;
+    background-color:#fff1f0;
+    color:#842029;
+    border:1px solid #f5c2c7;
+    padding:12px;
+    border-radius:6px;
+    text-align:center;
+">
+    ❌ E-posta veya şifre hatalı.
+</p>
     <label for="eposta">E-posta</label>
     <input id="eposta" name="email" type="email" required>
 
     <label for="sifre">Şifre</label>
     <input id="sifre" name="sifre" type="password" required>
+    <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+    <input type="checkbox" id="sifre-goster"
+           style="width:auto; margin:0;"
+           onclick="document.getElementById('sifre').type = this.checked ? 'text' : 'password';">
+    Şifreyi Göster
+</label>
+    <p style="text-align: right;">
+    <a href="sifremi-unuttum.html">Şifremi Unuttum?</a>
+</p>
 
     <button type="submit">Giriş Yap</button>
     <p>Hesabınız yok mu? <a href="kayit.html">Kayıt Ol</a></p>
@@ -66,5 +86,15 @@
 
 
   </form>
+  <script>
+    const parametreler = new URLSearchParams(window.location.search);
+
+    if (parametreler.get("hata") === "1") {
+        document.getElementById("giris-hatasi").style.display = "block";
+    }
+</script>
+
+
+
 </body>
 </html>

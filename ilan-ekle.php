@@ -128,8 +128,13 @@ if (!isset($_SESSION["kullanici_id"])) {
                 id="baslik"
                 name="baslik"
                 placeholder="Örn: 2018 Hyundai i20"
+                minlength="10"
+                maxlength="100"
                 required
             >
+                <small id="baslik-uyari" style="display:block; color:#777; margin-top:5px;">
+                 En az 10, en fazla 100 karakter yazabilirsiniz.
+                </small>
 
             <label for="marka">Marka</label>
             <input
@@ -187,6 +192,7 @@ if (!isset($_SESSION["kullanici_id"])) {
     placeholder="Motor seçin veya kendiniz yazın"
     required
 >
+    
 
 <datalist id="motorlar">
     <option value="1.0 T-GDI">
@@ -208,8 +214,8 @@ if (!isset($_SESSION["kullanici_id"])) {
                 id="yil"
                 name="yil"
                 placeholder="Örn: 2018"
-                min="1900"
-                max="2100"
+                min="1970"
+                max="2050"
                 required
             >
 
@@ -252,22 +258,14 @@ if (!isset($_SESSION["kullanici_id"])) {
             >
 
             <label for="il">İl</label>
-            <input
-                type="text"
-                id="il"
-                name="il"
-                placeholder="Örn: Sivas"
-                required
-            >
+            <select id="il" name="il" required>
+            <option value="">İl seçiniz</option>
+            </select>
 
             <label for="ilce">İlçe</label>
-            <input
-                type="text"
-                id="ilce"
-                name="ilce"
-                placeholder="Örn: Merkez"
-                required
-            >
+            <select id="ilce" name="ilce" required disabled>
+            <option value="">Önce il seçiniz</option>
+            </select>
 
 
         <label for="boya_degisen">Aracın Boya / Değişen Durumunu Yazınız</label>
@@ -275,9 +273,13 @@ if (!isset($_SESSION["kullanici_id"])) {
     id="boya_degisen"
     name="boya_degisen"
     rows="4"
+    maxlength="500"
     placeholder="Aracınızın boyalı ve değişen parçalarını yazınız..."
     required
 ></textarea>
+        <small style="display:block; color:#777; margin-top:5px;">
+    En fazla 500 karakter yazabilirsiniz.
+</small>
 
 
             <label for="aciklama">İlan Açıklaması</label>
@@ -285,8 +287,15 @@ if (!isset($_SESSION["kullanici_id"])) {
                 id="aciklama"
                 name="aciklama"
                 rows="5"
+                maxlength="2000"
                 placeholder="Aracınız hakkında bilgi veriniz..."
+                 required
             ></textarea>
+                
+                    <small style="display:block; color:#777; margin-top:5px;">
+            En fazla 2000 karakter yazabilirsiniz.
+                </small>
+
 
             <label for="fotograflar">Araç Fotoğrafları</label>
             <input
@@ -295,6 +304,7 @@ if (!isset($_SESSION["kullanici_id"])) {
                 name="fotograflar[]"
                 accept="image/*"
                 multiple
+                required
             >
             <input type="hidden" name="kapak_index" id="kapak_index" value="0">
 
@@ -369,12 +379,38 @@ if (!isset($_SESSION["kullanici_id"])) {
             modelAlani.placeholder = "Model seçin veya yazın";
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 const fotografInput = document.getElementById("fotograflar");
 const onizleme = document.getElementById("fotograf-onizleme");
 const kapakIndex = document.getElementById("kapak_index");
 
 fotografInput.addEventListener("change", function () {
+    if (this.files.length > 10) {
+    Swal.fire({
+        title: "Uyarı",
+        text: "En fazla 10 fotoğraf yükleyebilirsiniz.",
+        confirmButtonText: "Tamam",
+        confirmButtonColor: "#1e6ba8",
+        width: "350px"
+    });
+
+    this.value = "";
+    onizleme.innerHTML = "";
+    kapakIndex.value = 0;
+    return;
+}
+    const buyukFotograf = Array.from(this.files).find(function(dosya) {
+    return dosya.size > 10 * 1024 * 1024;
+});
+    
+if (buyukFotograf) {
+    alert("Her fotoğraf en fazla 10 MB olabilir.");
+    this.value = "";
+    onizleme.innerHTML = "";
+    kapakIndex.value = 0;
+    return;
+}
 
     onizleme.innerHTML = "";
     kapakIndex.value = 0;
@@ -415,7 +451,48 @@ fotografInput.addEventListener("change", function () {
 </script>
 
 
+    <script>
+fetch("il_ilce.json")
+    .then(cevap => cevap.json())
+    .then(veriler => {
 
+        const ilSecimi = document.getElementById("il");
+        const ilceSecimi = document.getElementById("ilce");
 
+        // İlleri listeye ekle
+        veriler.forEach(function(sehir) {
+            const secenek = document.createElement("option");
+            secenek.value = sehir.il;
+            secenek.textContent = sehir.il;
+            ilSecimi.appendChild(secenek);
+        });
+
+        // İl seçildiğinde ilçeleri getir
+        ilSecimi.addEventListener("change", function() {
+
+            ilceSecimi.innerHTML = '<option value="">İlçe seçiniz</option>';
+            ilceSecimi.disabled = true;
+
+            const secilenSehir = veriler.find(function(sehir) {
+                return sehir.il === ilSecimi.value;
+            });
+
+            if (secilenSehir) {
+                secilenSehir.ilceler.forEach(function(ilce) {
+                    const secenek = document.createElement("option");
+                    secenek.value = ilce;
+                    secenek.textContent = ilce;
+                    ilceSecimi.appendChild(secenek);
+                });
+
+                ilceSecimi.disabled = false;
+            }
+        });
+
+    })
+    .catch(hata => console.error("İl ve ilçeler yüklenemedi:", hata));
+</script>
+       
+    
 </body>
 </html>

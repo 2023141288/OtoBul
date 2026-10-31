@@ -161,6 +161,19 @@
       <button type="submit">Mesaj Gönder</button>
 
     </form>
+    <div id="basari-mesaji" style="
+    display: none;
+    background-color: #d1e7dd;
+    color: #0f5132;
+    border: 1px solid #badbcc;
+    padding: 18px;
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 20px;
+">
+    <strong>✅ Mesajınız başarıyla alındı!</strong>
+    <p>En kısa sürede size dönüş yapılacaktır.</p>
+</div>
 
   </main>
 <script>
@@ -169,7 +182,7 @@
   form.addEventListener("submit", function(event) {
     event.preventDefault();
 
-    alert("Mesajınız alınmıştır. En kısa sürede dönüş yapılacaktır.");
+    document.getElementById("basari-mesaji").style.display = "block";
 
     form.reset();
   });

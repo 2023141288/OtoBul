@@ -37,7 +37,7 @@ if (
     $marka === "" ||
     $model === "" ||
     $motor === "" ||
-    $yil < 1900 ||
+    $yil < 1970 ||
     $yil > 2100 ||
     $kilometre < 0 ||
     $yakit === "" ||
@@ -45,16 +45,24 @@ if (
     $fiyat <= 0 ||
     $il === "" ||
     $ilce === "" ||
-    $boya_degisen === ""
+    $boya_degisen === "" ||
+    $aciklama === ""
 ) {
     exit("Lütfen ilan bilgilerini eksiksiz ve doğru giriniz.");
 }
+    // İlan başlığı 10–100 karakter arasında olmalı.
+$baslikUzunlugu = preg_match_all('/./u', $baslik);
 
+if ($baslikUzunlugu < 10 || $baslikUzunlugu > 100) {
+    exit("İlan başlığı 10 ile 100 karakter arasında olmalıdır.");
+}
 // İlanı güncelle.
 // kullanici_id kontrolü sayesinde kullanıcı sadece kendi ilanını güncelleyebilir.
 $sorgu = $baglanti->prepare(
     "UPDATE ilanlar
      SET
+        durum = 'beklemede',
+        ret_gerekcesi = NULL,
         baslik = :baslik,
         marka = :marka,
         model = :model,
@@ -91,5 +99,5 @@ $sorgu->execute([
 ]);
 
 // Güncelleme sonrası ilan detayına dön.
-header("Location: ilan-detay.php?id=" . $ilan_id);
+header("Location: ilanlarim.php");
 exit;

@@ -46,12 +46,41 @@ if (
     $fiyat <= 0 ||
     $il === "" ||
     $ilce === "" ||
-    $boya_degisen === ""
+    $boya_degisen === "" ||
+    $aciklama === ""
 ) {
     exit("Lütfen ilan bilgilerini eksiksiz ve doğru giriniz.");
 }
+// İlan başlığı 10–100 karakter arasında olmalı.
+$baslikUzunlugu = preg_match_all('/./u', $baslik);
+
+if ($baslikUzunlugu < 10 || $baslikUzunlugu > 100) {
+    exit("İlan başlığı 10 ile 100 karakter arasında olmalıdır.");
+}
+
+// En az bir fotoğraf başarıyla gönderilmiş olmalı.
+if (
+    !isset($_FILES["fotograflar"]) ||
+    !in_array(
+        UPLOAD_ERR_OK,
+        $_FILES["fotograflar"]["error"] ?? [],
+        true
+    )
+) {
+    exit("İlan oluşturmak için en az bir fotoğraf eklemelisiniz.");
+}
+// En fazla 10 fotoğraf yüklenebilir.
+if (
+    isset($_FILES["fotograflar"]["name"]) &&
+    count($_FILES["fotograflar"]["name"]) > 10
+) {
+    header("Location: ilan-ekle.php?hata=fotograf_siniri");
+exit;
+}
+
 
 // İlanı veritabanına kaydet
+$baglanti->beginTransaction();
 $sorgu = $baglanti->prepare(
     "INSERT INTO ilanlar
     (
@@ -108,6 +137,8 @@ $sorgu->execute([
 
 // Yeni oluşan ilanın ID numarasını al.
 $ilan_id = $baglanti->lastInsertId();
+$kaydedilenFotograf = 0;
+$yuklenenDosyalar = [];
 // Fotoğrafların kaydedileceği klasör
 $yuklemeKlasoru = __DIR__ . "/uploads/ilanlar/";
 
@@ -139,11 +170,18 @@ if (isset($_FILES["fotograflar"])) {
             continue;
         }
 
-        // En fazla 5 MB
-        if ($_FILES["fotograflar"]["size"][$index] > 5 * 1024 * 1024) {
-            continue;
-        }
+        // En fazla 10 MB
+        if ($_FILES["fotograflar"]["size"][$index] > 10 * 1024 * 1024) {
 
+    foreach ($yuklenenDosyalar as $dosyaYolu) {
+        if (is_file($dosyaYolu)) {
+            unlink($dosyaYolu);
+        }
+    }
+
+        $baglanti->rollBack();
+        exit("Her fotoğraf en fazla 10 MB olabilir.");
+}
         // Dosyanın gerçekten izin verilen bir görsel olup olmadığını kontrol et.
         $dosyaTuru = $finfo->file($geciciDosya);
 
@@ -159,22 +197,45 @@ if (isset($_FILES["fotograflar"])) {
         $tamYol = $yuklemeKlasoru . $yeniDosyaAdi;
 
         if (move_uploaded_file($geciciDosya, $tamYol)) {
+            $yuklenenDosyalar[] = $tamYol;
 
             $veritabaniYolu = "uploads/ilanlar/" . $yeniDosyaAdi;
 
             $fotografSorgu = $baglanti->prepare(
-                INSERT INTO ilan_fotograflari (ilan_id, dosya_yolu, kapak_mi)
-VALUES (:ilan_id, :dosya_yolu, :kapak_mi)"
-            );
+    "INSERT INTO ilan_fotograflari (ilan_id, dosya_yolu, kapak_mi)
+     VALUES (:ilan_id, :dosya_yolu, :kapak_mi)"
+);
 
-            $fotografSorgu->execute([
+   $fotografSorgu->execute([
     ":ilan_id" => $ilan_id,
     ":dosya_yolu" => $veritabaniYolu,
     ":kapak_mi" => ($index === $kapak_index) ? 1 : 0
 ]);
+
+$kaydedilenFotograf++;
+        } 
+    } 
+        
+    
+$gonderilenFotograf = count($_FILES["fotograflar"]["name"]);
+
+
+
+if ($kaydedilenFotograf !== $gonderilenFotograf) {
+
+    foreach ($yuklenenDosyalar as $dosyaYolu) {
+        if (is_file($dosyaYolu)) {
+            unlink($dosyaYolu);
         }
     }
+
+    $baglanti->rollBack();
+    exit("Fotoğraflardan biri yüklenemedi. İlan oluşturulmadı.");
 }
+
+$baglanti->commit();}
+
+
 
 // İlan kaydedildi, yönetici onayı bekliyor.
 header("Location: panel.php?ilan=beklemede");

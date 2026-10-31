@@ -12,7 +12,8 @@ $email = trim($_POST["email"] ?? "");
 $sifre = $_POST["sifre"] ?? "";
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL) || $sifre === "") {
-    exit("E-posta veya şifre hatalı.");
+    header("Location: giris.html?hata=1");
+    exit;
 }
 
 $sorgu = $baglanti->prepare(
@@ -33,5 +34,6 @@ if ($kullanici && password_verify($sifre, $kullanici["sifre"])) {
     header("Location: panel.php");
 exit;
 } else {
-    echo "E-posta veya şifre hatalı.";
+    header("Location: giris.html?hata=1");
+    exit;
 }

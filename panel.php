@@ -165,7 +165,13 @@ $adminMi = ($rolSorgu->fetchColumn() === "admin");
 
 .hesap-menu {
     position: relative;
-    color: white;
+    margin-left: auto;
+    background-color: white;
+    color: #1769aa;
+    padding: 13px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
 }
 
 .hesap-menu summary {
@@ -199,17 +205,85 @@ $adminMi = ($rolSorgu->fetchColumn() === "admin");
     color: #1769aa;
 }
 
+
+
+.ust-slogan {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 25px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+.ust-menu {
+    position: relative;
+}
+
+@media (max-width: 700px) {
+    .ust-slogan {
+        display: none;
+    }
+}
+.asistan-baslat summary {
+    background-color: #1769aa;
+    color: white;
+    padding: 14px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    list-style: none;
+}
+
+.asistan-baslat summary:hover {
+    background-color: #123b66;
+}
+
+.asistan-baslat p {
+    margin-top: 20px;
+}
+
+
+.asistan-mesaj-alani {
+    margin-top: 20px;
+}
+
+.asistan-mesaj-alani textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #c8daed;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    resize: vertical;
+}
+
+.asistan-mesaj-alani button {
+    margin-top: 12px;
+    background-color: #1769aa;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
     </style>
+
+
 </head>
 
 <body>
     
 <header class="ust-menu">
     <a class="logo" href="panel.php">OtoBul</a>
+    <div class="ust-slogan">
+    🚘 Hayalindeki aracı Bul!
+</div>
 
-    <input class="arama"
-           type="search"
-           placeholder="Marka veya model ara">
+    
 
     <details class="hesap-menu">
     <summary>Hesabım ▼</summary>
@@ -280,12 +354,54 @@ $adminMi = ($rolSorgu->fetchColumn() === "admin");
         otomobili bulmanıza yardımcı olacağız.
     </p>
 
-    <span>Çok yakında</span>
+    <details class="asistan-baslat">
+    <summary>🤖 Araç Asistanını Başlat</summary>
+
+    <p>
+        Merhaba! 🚘 OtoBula hoş geldin.
+        Bütçeni ve nasıl bir araç aradığınızı yazabilirmisin.
+
+    </p>
+<div class="asistan-mesaj-alani">
+    <textarea
+        id="asistan-mesaj"
+        placeholder="Örneğin: bütçeni, ve isteğini yaz."
+        rows="3"
+    ></textarea>
+
+    <button type="button" id="asistan-gonder">
+        🚀 Araç Öner
+    </button>
+</div>
+<div id="asistan-sonuc"></div>
+
+
+
+</details>
 </section>
 
         </main>
 
 </div>
+<script>
+    const mesajKutusu = document.getElementById("asistan-mesaj");
+    const gonderButonu = document.getElementById("asistan-gonder");
+    const sonucAlani = document.getElementById("asistan-sonuc");
+
+    gonderButonu.addEventListener("click", function() {
+        const mesaj = mesajKutusu.value.trim();
+
+        if (mesaj === "") {
+            alert("Lütfen nasıl bir araç aradığınızı yazın.");
+            return;
+        }
+
+        sonucAlani.textContent = "🚘 Araç isteğiniz: " + mesaj;
+    });
+</script>
+
+
+
 
 </body>
 </html>

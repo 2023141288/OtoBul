@@ -252,6 +252,26 @@ $ilanlar = $sorgu->fetchAll(PDO::FETCH_ASSOC);
                         <p class="fiyat">
                             <?= number_format((float) $ilan["fiyat"], 0, ",", ".") ?> TL
                         </p>
+                        <p>
+    <strong>Durum:</strong>
+
+    <?php if ($ilan["durum"] === "beklemede"): ?>
+        🟡 Onay Bekliyor
+
+    <?php elseif ($ilan["durum"] === "onaylandi"): ?>
+        🟢 Onaylandı
+
+    <?php elseif ($ilan["durum"] === "reddedildi"): ?>
+        🔴 Reddedildi
+    <?php endif; ?>
+</p>
+
+<?php if ($ilan["durum"] === "reddedildi"): ?>
+    <p>
+        <strong>Ret Gerekçesi:</strong>
+        <?= htmlspecialchars($ilan["ret_gerekcesi"] ?? "", ENT_QUOTES, "UTF-8") ?>
+    </p>
+<?php endif; ?>
                         <div class="ilan-islemleri">
 
     <a class="ilan-gor"
@@ -267,7 +287,7 @@ $ilanlar = $sorgu->fetchAll(PDO::FETCH_ASSOC);
     <form
         action="ilan-sil.php"
         method="POST"
-        onsubmit="return confirm('Bu ilanı silmek istediğinize emin misiniz?');"
+        onsubmit="return ilanSilmeOnayi(event, this);"
     >
         <input
             type="hidden"
@@ -293,6 +313,29 @@ $ilanlar = $sorgu->fetchAll(PDO::FETCH_ASSOC);
     <?php endif; ?>
 
 </main>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script>
+function ilanSilmeOnayi(event, form) {
+    event.preventDefault();
+
+    Swal.fire({
+        title: "İlanı Sil",
+        text: "Bu ilanı silmek istediğinize emin misiniz?",
+        showCancelButton: true,
+        confirmButtonText: "Evet, Sil",
+        cancelButtonText: "Vazgeç",
+        confirmButtonColor: "#1769aa",
+        cancelButtonColor: "#777",
+        width: "350px"
+    }).then(function(sonuc) {
+        if (sonuc.isConfirmed) {
+            form.submit();
+        }
+    });
+
+    return false;
+}
+</script>
 </body>
 </html>

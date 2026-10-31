@@ -65,6 +65,13 @@
   <h1>OtoBul'a Kayıt Ol</h1>
 
   <form action="kayit.php" method="POST">
+    <p id="kayit-mesaji" style="
+    display:none;
+    padding:12px;
+    border-radius:6px;
+    text-align:center;
+    font-size:14px;
+"></p>
     <label for="ad">Ad Soyad</label>
     <input id="ad" name="ad_soyad" type="text" required>
 
@@ -73,6 +80,12 @@
 
     <label for="sifre">Şifre</label>
     <input id="sifre" name="sifre" type="password" required>
+    <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+    <input type="checkbox" id="sifre-goster"
+           style="width:auto; margin:0;"
+           onclick="document.getElementById('sifre').type = this.checked ? 'text' : 'password';">
+    Şifreyi Göster
+</label>
 
     <button type="submit">Kayıt Ol</button>
 
@@ -83,5 +96,33 @@
       <p><a href="index.html">Ana Sayfaya Dön</a></p>
     </div>
   </form>
+
+    <script>
+    const parametreler = new URLSearchParams(window.location.search);
+    const mesajAlani = document.getElementById("kayit-mesaji");
+
+    if (parametreler.get("hata") === "bilgiler") {
+        mesajAlani.textContent = "❌ Bilgileri kontrol edin. Şifre en az 8 karakter olmalı.";
+        mesajAlani.style.backgroundColor = "#fff1f0";
+        mesajAlani.style.color = "#842029";
+        mesajAlani.style.display = "block";
+    }
+
+    else if (parametreler.get("hata") === "eposta") {
+        mesajAlani.textContent = "❌ Bu e-posta adresi zaten kayıtlı.";
+        mesajAlani.style.backgroundColor = "#fff1f0";
+        mesajAlani.style.color = "#842029";
+        mesajAlani.style.display = "block";
+    }
+
+    else if (parametreler.get("basarili") === "1") {
+        mesajAlani.textContent = "✅ Kaydınız başarıyla oluşturuldu. Giriş yapabilirsiniz.";
+        mesajAlani.style.backgroundColor = "#d1e7dd";
+        mesajAlani.style.color = "#0f5132";
+        mesajAlani.style.display = "block";
+    }
+</script>
+
+
 </body>
 </html>

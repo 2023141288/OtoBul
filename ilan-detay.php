@@ -18,13 +18,14 @@ if ($ilan_id <= 0) {
 // İlan bilgilerini getir.
 $sorgu = $baglanti->prepare(
     "SELECT *
-     FROM ilanlar
-     WHERE id = :id
-     AND durum = 'onaylandi'"
+ FROM ilanlar
+ WHERE id = :id
+ AND (durum = 'onaylandi' OR kullanici_id = :kullanici_id)"
 );
 
 $sorgu->execute([
-    ":id" => $ilan_id
+    ":id" => $ilan_id,
+    ":kullanici_id" => $_SESSION["kullanici_id"]
 ]);
 
 $ilan = $sorgu->fetch(PDO::FETCH_ASSOC);
@@ -113,11 +114,19 @@ $fotograflar = $fotografSorgu->fetchAll(PDO::FETCH_ASSOC);
         }
 
         .fotograflar img {
-            width: 100%;
-            height: 230px;
-            object-fit: cover;
-            border-radius: 10px;
-        }
+    width: 100%;
+    height: 230px;
+    object-fit: cover;
+    border-radius: 10px;
+    cursor: zoom-in;
+    transition: transform 0.3s ease;
+}
+
+.fotograflar img:hover {
+    transform: scale(3);
+    position: relative;
+    z-index: 10;
+}
 
         .ilan-bilgileri {
             background-color: white;

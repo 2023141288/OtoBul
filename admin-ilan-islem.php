@@ -1,25 +1,23 @@
 
 <?php
 session_start();
-// Admin işlemleri için güvenlik anahtarı
-if (empty($_SESSION["admin_csrf_token"])) {
-    $_SESSION["admin_csrf_token"] = bin2hex(random_bytes(32));
-}
+
 require_once "baglanti.php";
 
-// Giriş yapılmış mı?
+// Kullanıcı giriş yapmamışsa onu giriş sayfasına gönder.
 if (!isset($_SESSION["kullanici_id"])) {
     header("Location: giris.html");
     exit;
 }
 
-// İşlem sadece form üzerinden yapılabilir.
+// İşlem sadece form üzerinden yapılabilir. GET ve POST, 
+// tarayıcının sunucuya istek göndermek için kullandığı HTTP yöntemleridir.
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     header("Location: admin.php");
     exit;
 }
 
-// Formun güvenlik anahtarını kontrol et.
+// Formun güvenlik anahtarını kontrol et. Bu kod CSRF güvenlik kontrolü yapıyor. Yani başka bir sitenin, yönetici adına izinsiz işlem yaptırmasını önlemeye yardımcı oluyor.
 $token = $_POST["csrf_token"] ?? "";
 
 if (
@@ -66,16 +64,37 @@ $yeniDurum = $islem === "onayla"
     ? "onaylandi"
     : "reddedildi";
 
-// Sadece bekleyen ilanların durumunu değiştir.
+// Formdan ret gerekçesini al.
+$retGerekcesi = $_POST["ret_gerekcesi"] ?? "";
+
+if (!is_string($retGerekcesi)) {
+    exit("Geçersiz ret gerekçesi.");
+}
+
+$retGerekcesi = trim($retGerekcesi);
+
+// İlan reddediliyorsa gerekçe zorunlu olsun.
+if ($islem === "reddet" && $retGerekcesi === "") {
+    exit("İlanı reddetmek için gerekçe yazmalısınız.");
+}
+
+// İlan onaylanıyorsa ret gerekçesi kaydedilmesin.
+if ($islem === "onayla") {
+    $retGerekcesi = null;
+}
+
+// İlanın durumunu ve ret gerekçesini güncelle.
 $guncelle = $baglanti->prepare(
     "UPDATE ilanlar
-     SET durum = :durum
+     SET durum = :durum,
+         ret_gerekcesi = :ret_gerekcesi
      WHERE id = :ilan_id
        AND durum = 'beklemede'"
 );
 
 $guncelle->execute([
     ":durum" => $yeniDurum,
+    ":ret_gerekcesi" => $retGerekcesi,
     ":ilan_id" => $ilan_id
 ]);
 

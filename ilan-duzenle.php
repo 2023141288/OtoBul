@@ -151,6 +151,8 @@ if (!$ilan) {
             type="text"
             name="baslik"
             value="<?= htmlspecialchars($ilan["baslik"], ENT_QUOTES, "UTF-8") ?>"
+            minlength="10"
+            maxlength="100"
             required
         >
 
@@ -182,7 +184,7 @@ if (!$ilan) {
         <input
             type="number"
             name="yil"
-            min="1900"
+            min="1970"
             max="2100"
             value="<?= (int) $ilan["yil"] ?>"
             required
@@ -250,6 +252,7 @@ if (!$ilan) {
         <textarea
             name="aciklama"
             rows="6"
+            required
         ><?= htmlspecialchars($ilan["aciklama"], ENT_QUOTES, "UTF-8") ?></textarea>
 
         <button type="submit">

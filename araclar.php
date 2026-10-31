@@ -9,6 +9,7 @@ if (!isset($_SESSION["kullanici_id"])) {
 
 $marka = trim($_GET["marka"] ?? "");
 $model = trim($_GET["model"] ?? "");
+$motor = trim($_GET["motor"] ?? "");
 $min_yil = (int) ($_GET["min_yil"] ?? 0);
 $max_yil = (int) ($_GET["max_yil"] ?? 0);
 $min_fiyat = (float) ($_GET["min_fiyat"] ?? 0);
@@ -27,6 +28,10 @@ if ($marka !== "") {
 if ($model !== "") {
     $kosullar[] = "i.model LIKE :model";
     $parametreler[":model"] = "%" . $model . "%";
+}
+    if ($motor !== "") {
+    $kosullar[] = "i.motor LIKE :motor";
+    $parametreler[":motor"] = $motor . "%";
 }
 if ($min_yil > 0) {
     $kosullar[] = "i.yil >= :min_yil";
@@ -177,12 +182,55 @@ h1 {
 
 <body>
 
-<h1>Satılık Araçlar</h1>
+
+<h1>
+    <a href="panel.php" style="display:block; font-size:16px; margin-bottom:12px; color:#1769aa; text-decoration:none;">
+        ← Ana Sayfaya Dön
+    </a>
+    Satılık Araçlar
+</h1>
+
 <form class="filtre-formu" method="GET" action="araclar.php">
 
-    <input type="text" name="marka" placeholder="Marka">
-    <input type="text" name="model" placeholder="Model">
+    <input type="text" name="marka" id="marka"
+       list="marka-listesi" placeholder="Marka"
+       value="<?= htmlspecialchars($marka) ?>">
 
+<datalist id="marka-listesi">
+    <option value="Hyundai">
+    <option value="Fiat">
+    <option value="Renault">
+    <option value="Toyota">
+    <option value="Volkswagen">
+    <option value="Ford">
+    <option value="Honda">
+    <option value="BMW">
+    <option value="Mercedes-Benz">
+    <option value="Opel">
+    <option value="Peugeot">
+    <option value="Citroen">
+</datalist>
+
+<input type="text" name="model" id="model"
+       list="model-listesi" placeholder="Model"
+       value="<?= htmlspecialchars($model) ?>">
+
+<datalist id="model-listesi"></datalist>
+    <select name="motor">
+    <option value="">Motor hacmi fark etmez</option>
+    <option value="0.9">0.9</option>
+    <option value="1.0">1.0</option>
+    <option value="1.2">1.2</option>
+    <option value="1.3">1.3</option>
+    <option value="1.4">1.4</option>
+    <option value="1.5">1.5</option>
+    <option value="1.6">1.6</option>
+    <option value="1.8">1.8</option>
+    <option value="2.0">2.0</option>
+    <option value="2.2">2.2</option>
+    <option value="2.5">2.5</option>
+    <option value="3.0">3.0</option>
+</select>
     <input type="number" name="min_yil" placeholder="En düşük yıl">
     <input type="number" name="max_yil" placeholder="En yüksek yıl">
 
@@ -193,6 +241,7 @@ h1 {
 
     <select name="yakit">
         <option value="">Yakıt fark etmez</option>
+        <option value="Benzin / LPG">Benzin / LPG</option>
         <option value="Benzin">Benzin</option>
         <option value="Dizel">Dizel</option>
         <option value="LPG">LPG</option>
@@ -207,7 +256,13 @@ h1 {
         <option value="Yarı Otomatik">Yarı Otomatik</option>
     </select>
 
-    <input type="text" name="il" placeholder="İl">
+    <select id="il" name="il">
+    <option value="">İl fark etmez</option>
+</select>
+
+<select id="ilce" name="ilce" disabled>
+    <option value="">Önce il seçiniz</option>
+</select>
 
     <button type="submit">Araçları Göster</button>
 
@@ -258,7 +313,92 @@ h1 {
     <?php endforeach; ?>
 
 </div>
+                <script>
+const modeller = {
+    "Hyundai": ["Accent era","i20", "i30", "Elantra", "Bayon", "Tucson","i10","Accent Blue"],
+    "Fiat": ["Egea", "Linea", "Doblo", "Punto", "Palio"],
+    "Renault": ["Clio", "Megane", "Symbol", "Fluence", "Captur"],
+    "Toyota": ["Corolla", "Yaris", "C-HR", "Auris","Avensis"],
+    "Volkswagen": ["Golf", "Passat", "Polo", "Jetta", "Tiguan"],
+    "Ford": ["Focus", "Fiesta", "Mondeo", "Kuga"],
+    "Honda": ["Civic", "City", "Jazz", "CR-V"],
+    "BMW": ["3 Serisi", "5 Serisi", "1 Serisi", "X5"],
+    "Mercedes-Benz": ["C Serisi", "E Serisi", "A Serisi", "CLA"],
+    "Opel": ["Astra", "Corsa", "Insignia", "Mokka"],
+    "Peugeot": ["208", "308", "3008", "508"],
+    "Citroen": ["C3", "C4", "C5 Aircross", "Berlingo"]
+};
 
+const markaInput = document.getElementById("marka");
+const modelInput = document.getElementById("model");
+const modelListesi = document.getElementById("model-listesi");
+
+function modelleriGuncelle() {
+    const marka = markaInput.value.trim().toLocaleLowerCase("tr");
+    modelListesi.innerHTML = "";
+
+    const secilenMarka = Object.keys(modeller).find(
+        m => m.toLocaleLowerCase("tr") === marka
+    );
+
+    if (secilenMarka) {
+        modeller[secilenMarka].forEach(function(model) {
+            const option = document.createElement("option");
+            option.value = model;
+            modelListesi.appendChild(option);
+        });
+    }
+}
+
+markaInput.addEventListener("input", function() {
+    modelInput.value = "";
+    modelleriGuncelle();
+});
+
+modelleriGuncelle();
+</script>
+                <script>
+fetch("il_ilce.json")
+    .then(cevap => cevap.json())
+    .then(veriler => {
+
+        const ilSecimi = document.getElementById("il");
+        const ilceSecimi = document.getElementById("ilce");
+
+        // İlleri listeye ekle
+        veriler.forEach(function(sehir) {
+            const secenek = document.createElement("option");
+            secenek.value = sehir.il;
+            secenek.textContent = sehir.il;
+            ilSecimi.appendChild(secenek);
+        });
+
+        // İl seçildiğinde ilçeleri getir
+        ilSecimi.addEventListener("change", function() {
+
+            ilceSecimi.innerHTML =
+                '<option value="">İlçe fark etmez</option>';
+
+            ilceSecimi.disabled = true;
+
+            const secilenSehir = veriler.find(function(sehir) {
+                return sehir.il === ilSecimi.value;
+            });
+
+            if (secilenSehir) {
+                secilenSehir.ilceler.forEach(function(ilce) {
+                    const secenek = document.createElement("option");
+                    secenek.value = ilce;
+                    secenek.textContent = ilce;
+                    ilceSecimi.appendChild(secenek);
+                });
+
+                ilceSecimi.disabled = false;
+            }
+        });
+    })
+    .catch(hata => console.error("İl ve ilçeler yüklenemedi:", hata));
+</script>
 </body>
 </html>
 

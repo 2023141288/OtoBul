@@ -12,9 +12,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $sifre = $_POST["sifre"] ?? "";
 
     if ($ad_soyad === "" || !filter_var($email, FILTER_VALIDATE_EMAIL)
-        || strlen($sifre) < 8) {
-        exit("Bilgileri kontrol edin. Şifre en az 8 karakter olmalı.");
-    }
+    || strlen($sifre) < 8) {
+
+    header("Location: kayit.html?hata=bilgiler");
+    exit;
+}
 
     $sifreli_sifre = password_hash($sifre, PASSWORD_DEFAULT);
 
@@ -30,12 +32,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             ":sifre" => $sifreli_sifre
         ]);
 
-        echo "Kaydınız başarıyla oluşturuldu.";
+        header("Location: kayit.html?basarili=1");
+exit;
 
     } catch (PDOException $hata) {
         if ($hata->getCode() === "23000") {
-            exit("Bu e-posta adresi zaten kayıtlı.");
-        }
+    header("Location: kayit.html?hata=eposta");
+    exit;
+}
 
         error_log($hata->getMessage());
         exit("Kayıt sırasında bir hata oluştu.");
