@@ -54,5 +54,5 @@ $mesajEkle->execute([
     ":mesaj" => $mesaj
 ]);
 
-header("Location: ilan-detay.php?id=" . $ilan_id);
+header("Location: ilan-detay.php?id=" . $ilan_id . "&mesaj=basarili");
 exit;

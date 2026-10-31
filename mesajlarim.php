@@ -166,9 +166,11 @@ $mesajlar = $sorgu->fetchAll(PDO::FETCH_ASSOC);
             : $mesaj["gonderen_id"]
     ) ?>">
         💬 Konuşmayı Aç / Cevap Ver
+        </a>
+        </p>
         
 <form action="konusma-sil.php" method="POST"
-      onsubmit="return confirm('Bu konuşmayı listenizden kaldırmak istiyor musunuz?');">
+      onsubmit="return konusmaSilmeOnayi(event, this);">
 
     <input type="hidden" name="ilan_id"
            value="<?= (int) $mesaj["ilan_id"] ?>">
@@ -192,8 +194,6 @@ $mesajlar = $sorgu->fetchAll(PDO::FETCH_ASSOC);
 
 </form>
 
-    </a>
-</p>
 
 
             </div>
@@ -202,6 +202,30 @@ $mesajlar = $sorgu->fetchAll(PDO::FETCH_ASSOC);
 
     <?php endif; ?>
 </main>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script>
+function konusmaSilmeOnayi(event, form) {
+    event.preventDefault();
+
+    Swal.fire({
+        icon: "warning",
+        title: "Konuşmayı Sil?",
+        text: "Bu konuşmayı listenizden kaldırmak istediğinize emin misiniz?",
+        showCancelButton: true,
+        confirmButtonText: "Evet, Sil",
+        cancelButtonText: "Vazgeç",
+        confirmButtonColor: "#1769aa",
+        cancelButtonColor: "#777",
+        width: "350px"
+    }).then(function(sonuc) {
+        if (sonuc.isConfirmed) {
+            form.submit();
+        }
+    });
+
+    return false;
+}
+</script>
 </body>
 </html>

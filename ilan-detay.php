@@ -160,8 +160,16 @@ $fotograflar = $fotografSorgu->fetchAll(PDO::FETCH_ASSOC);
 
 <body>
     <?php if (($_GET["mesaj"] ?? "") === "basarili"): ?>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        alert("Mesajınız başarıyla gönderildi.");
+        Swal.fire({
+            icon: "success",
+            title: "Mesaj Gönderildi!",
+            text: "Mesajınız satıcıya başarıyla gönderildi.",
+            confirmButtonText: "Tamam",
+            confirmButtonColor: "#1769aa",
+            width: "350px"
+        });
     </script>
 <?php endif; ?>
 

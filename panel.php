@@ -21,6 +21,43 @@ $rolSorgu->execute([
 ]);
 
 $adminMi = ($rolSorgu->fetchColumn() === "admin");
+// Okunmamış gelen mesaj var mı?
+$mesajSorgu = $baglanti->prepare(
+    "SELECT COUNT(*)
+     FROM mesajlar m
+     WHERE m.alici_id = :kullanici_id
+       AND m.okundu = 0
+       AND NOT EXISTS (
+           SELECT 1
+           FROM gizlenen_konusmalar g
+           WHERE g.kullanici_id = m.alici_id
+             AND g.ilan_id = m.ilan_id
+             AND g.diger_kullanici_id = m.gonderen_id
+             AND m.id <= g.son_gizlenen_mesaj_id
+       )"
+);
+
+$mesajSorgu->execute([
+    ":kullanici_id" => $_SESSION["kullanici_id"]
+]);
+
+$okunmamisMesajVar = ($mesajSorgu->fetchColumn() > 0);
+
+$retSorgu = $baglanti->prepare(
+    "SELECT id, baslik, ret_gerekcesi
+     FROM ilanlar
+     WHERE kullanici_id = :kullanici_id
+       AND durum = 'reddedildi'
+     ORDER BY id DESC"
+);
+
+// Kullanıcının oturumdaki ID'sini sorguya gönder.
+$retSorgu->execute([
+    ":kullanici_id" => $_SESSION["kullanici_id"]
+]);
+
+// Bulunan reddedilmiş ilanları diziye aktar.
+$reddedilenIlanlar = $retSorgu->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -269,7 +306,19 @@ $adminMi = ($rolSorgu->fetchColumn() === "admin");
     cursor: pointer;
     font-weight: bold;
 }
+    .mesaj-menu {
+    position: relative;
+}
 
+.mesaj-nokta {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    background-color: #e53935;
+    border-radius: 50%;
+    margin-left: 6px;
+    vertical-align: middle;
+}
     </style>
 
 
@@ -303,7 +352,13 @@ $adminMi = ($rolSorgu->fetchColumn() === "admin");
 
         <a href="ilanlarim.php">🚗 İlanlarım</a>
         <a href="favorilerim.php">❤️ Favori İlanlarım</a>
-        <a href="mesajlarim.php">💬 Mesajlarım</a>
+        <a href="mesajlarim.php" class="mesaj-menu">
+    💬 Mesajlarım
+
+    <?php if ($okunmamisMesajVar): ?>
+        <span class="mesaj-nokta"></span>
+    <?php endif; ?>
+</a>
         <?php if ($adminMi): ?>
     <a href="admin.php">🛡️ Yönetici Paneli</a>
 <?php endif; ?>
@@ -336,6 +391,36 @@ $adminMi = ($rolSorgu->fetchColumn() === "admin");
     </div>
 
 <?php endif; ?>
+
+
+<?php foreach ($reddedilenIlanlar as $ilan): ?>
+
+    <div style="
+        background-color: #fff1f0;
+        color: #842029;
+        border: 1px solid #f5c2c7;
+        padding: 18px;
+        border-radius: 10px;
+        max-width: 600px;
+        margin: 20px auto;
+        text-align: left;
+    ">
+
+        <strong>❌ İlanınız Reddedildi</strong>
+
+        <p>
+            <strong>İlan:</strong>
+            <?= htmlspecialchars($ilan["baslik"], ENT_QUOTES, "UTF-8") ?>
+        </p>
+
+        <p>
+            <strong>Ret Gerekçesi:</strong>
+            <?= htmlspecialchars($ilan["ret_gerekcesi"] ?? "Belirtilmedi.", ENT_QUOTES, "UTF-8") ?>
+        </p>
+
+    </div>
+
+<?php endforeach; ?>
 
 
         <p>Ne yapmak istiyorsun?</p>

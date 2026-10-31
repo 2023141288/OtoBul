@@ -70,6 +70,23 @@ $mesajlar = $sorgu->fetchAll(PDO::FETCH_ASSOC);
 if (empty($mesajlar)) {
     exit("Konuşma bulunamadı veya erişim yetkiniz yok.");
 }
+    // Kullanıcı konuşmayı açtığında kendisine gelen mesajları okundu yap.
+$okunduSorgu = $baglanti->prepare(
+    "UPDATE mesajlar
+     SET okundu = 1
+     WHERE ilan_id = :ilan_id
+       AND gonderen_id = :kisi_id
+       AND alici_id = :kullanici_id
+       AND id > :son_gizlenen_id
+       AND okundu = 0"
+);
+
+$okunduSorgu->execute([
+    ":ilan_id" => $ilan_id,
+    ":kisi_id" => $kisi_id,
+    ":kullanici_id" => $kullanici_id,
+    ":son_gizlenen_id" => $son_gizlenen_id
+]);
 ?>
 
 <!DOCTYPE html>
